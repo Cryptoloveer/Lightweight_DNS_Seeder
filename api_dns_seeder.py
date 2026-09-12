@@ -25,15 +25,23 @@ class PeerResolver(BaseResolver):
                 peers = data.get("result", [])
                 ipv4_list = []
                 ipv6_list = []
+                ipv4_seen = set()
+                ipv6_seen = set()
 
                 for entry in peers:
                     ip = entry.get("addr", "")
                     try:
                         ip_obj = ip_address(ip)
-                        if ip_obj.version == 4:
-                            ipv4_list.append(str(ip_obj))
-                        elif ip_obj.version == 6:
-                            ipv6_list.append(str(ip_obj))
+                        if not ip_obj.is_global:
+                            continue
+
+                        normalized_ip = str(ip_obj)
+                        if ip_obj.version == 4 and normalized_ip not in ipv4_seen:
+                            ipv4_seen.add(normalized_ip)
+                            ipv4_list.append(normalized_ip)
+                        elif ip_obj.version == 6 and normalized_ip not in ipv6_seen:
+                            ipv6_seen.add(normalized_ip)
+                            ipv6_list.append(normalized_ip)
                     except ValueError:
                         continue
 
