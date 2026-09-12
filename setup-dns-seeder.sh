@@ -44,9 +44,10 @@ sudo systemctl daemon-reload
 sudo systemctl enable advc-dnsseeder.service
 sudo systemctl restart advc-dnsseeder.service
 
-# 5. Open DNS port
-echo "🌐 Opening DNS port 53..."
-sudo ufw allow 53
+# 5. Open the configured DNS port
+echo "🌐 Opening DNS port 8053..."
+sudo ufw allow 8053/tcp
+sudo ufw allow 8053/udp
 sudo ufw reload
 
 echo "✅ DNS Seeder is installed and running!"
